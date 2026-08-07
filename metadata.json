@@ -1,0 +1,6 @@
+{
+  "name": "Accredian Enterprise",
+  "description": "Executive education and workforce upskilling landing page for Accredian Enterprise with interactive programs, live metrics, and lead intake.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
