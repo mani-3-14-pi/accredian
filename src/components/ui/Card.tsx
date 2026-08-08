@@ -17,8 +17,8 @@ export const Card: React.FC<CardProps> = ({
   onClick,
 }) => {
   const variantStyles = {
-    glass: 'glass-card rounded-xl p-6 md:p-8 border border-white/10 text-[#d3e4fe]',
-    solid: 'bg-[#102034] border border-[#494454] rounded-xl p-6 md:p-8 text-[#d3e4fe]',
+    glass: 'glass-card rounded-xl p-6 md:p-8 border border-[#DCEBFF] text-slate-900',
+    solid: 'bg-[#FFFFFF] border border-[#DCEBFF] rounded-xl p-6 md:p-8 text-slate-900',
     'mode-b': 'bg-white border border-slate-200 rounded-xl p-6 md:p-8 text-slate-900 shadow-sm',
   };
 

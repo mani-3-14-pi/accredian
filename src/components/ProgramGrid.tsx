@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SectionHeader } from './ui/SectionHeader';
-import { ProgramCard } from './ProgramCard';
 import { Button } from './ui/Button';
 import { ProgramItem } from '../types';
 
@@ -12,6 +11,13 @@ interface ProgramGridProps {
 export const ProgramGrid: React.FC<ProgramGridProps> = ({ onTalkToTeam }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [activeProgram, setActiveProgram] = useState<ProgramItem | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeftPos, setScrollLeftPos] = useState(0);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const programs: ProgramItem[] = [
     {
@@ -135,149 +141,385 @@ export const ProgramGrid: React.FC<ProgramGridProps> = ({ onTalkToTeam }) => {
       ? programs
       : programs.filter((p) => p.category === selectedCategory);
 
+  const categoryColors: Record<string, string> = {
+    'AI & Technology': 'from-[#2F80FF] to-[#8EC5FF]',
+    'Product & Growth': 'from-[#7C3AED] to-[#A78BFA]',
+    'Executive Leadership': 'from-[#0F766E] to-[#2DD4BF]',
+    'Domain Specialist': 'from-[#C2410C] to-[#FB923C]',
+  };
+
+  const categoryAccent: Record<string, string> = {
+    'AI & Technology': 'bg-blue-50 text-blue-700 border-blue-100',
+    'Product & Growth': 'bg-purple-50 text-purple-700 border-purple-100',
+    'Executive Leadership': 'bg-teal-50 text-teal-700 border-teal-100',
+    'Domain Specialist': 'bg-orange-50 text-orange-700 border-orange-100',
+  };
+
+  const updateScrollState = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 10);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 10);
+  }, []);
+
+  // Update scroll indicators on mount & scroll
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    updateScrollState();
+    el.addEventListener('scroll', updateScrollState, { passive: true });
+    return () => el.removeEventListener('scroll', updateScrollState);
+  }, [updateScrollState]);
+
+  // Handle wheel events directly on the scroll track
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      // Allow natural horizontal trackpad swipes
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      if (maxScroll <= 0) return;
+
+      const atStart = el.scrollLeft <= 2 && e.deltaY < 0;
+      const atEnd = el.scrollLeft >= maxScroll - 2 && e.deltaY > 0;
+
+      // Allow vertical page scroll if at boundaries
+      if (atStart || atEnd) return;
+
+      e.preventDefault();
+      el.scrollLeft += e.deltaY * 1.5;
+    };
+
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, [filteredPrograms]);
+
+  // Reset scroll on category change
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+    const timer = setTimeout(updateScrollState, 300);
+    return () => clearTimeout(timer);
+  }, [selectedCategory, updateScrollState]);
+
+  const scrollBy = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        left: direction === 'right' ? 380 : -380,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  // Mouse Drag to Scroll handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setIsDragging(true);
+    setStartX(e.pageX - el.offsetLeft);
+    setScrollLeftPos(el.scrollLeft);
+  };
+
+  const handleMouseLeaveOrUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    e.preventDefault();
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - startX) * 1.8;
+    el.scrollLeft = scrollLeftPos - walk;
+  };
+
   return (
-    <section id="programs" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-[#494454]/40">
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
-        <SectionHeader
-          title="Program"
-          highlightText="Specializations"
-          description="Comprehensive executive learning paths for modern enterprises."
-          align="left"
-          className="mb-0 max-w-2xl"
+    <section id="programs" className="snap-section py-24 md:py-28 border-t border-[#DCEBFF]/40">
+      {/* Header row */}
+      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-3">
+          <SectionHeader
+            title="Program"
+            highlightText="Specializations"
+            description="Comprehensive executive learning paths for modern enterprises."
+            align="left"
+            className="mb-0 max-w-2xl"
+          />
+          <div className="shrink-0 flex items-start pt-2">
+            <Button
+              variant="glass"
+              size="md"
+              onClick={onTalkToTeam}
+              icon={<span className="material-symbols-outlined text-sm">arrow_forward</span>}
+            >
+              Request Custom Cohort
+            </Button>
+          </div>
+        </div>
+
+        {/* Filter pills row + scroll arrows */}
+        <div className="flex items-center justify-between gap-4 mb-0">
+          <div className="flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                  selectedCategory === cat
+                    ? 'bg-[#2F80FF] text-white shadow-[0_0_16px_rgba(47,128,255,0.35)]'
+                    : 'bg-white border border-slate-200 text-slate-600 hover:border-[#2F80FF] hover:text-[#2F80FF]'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Scroll arrow buttons */}
+          <div className="hidden md:flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => scrollBy('left')}
+              disabled={!canScrollLeft}
+              className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-200 ${
+                canScrollLeft
+                  ? 'border-slate-300 text-slate-600 hover:border-[#2F80FF] hover:text-[#2F80FF] bg-white cursor-pointer'
+                  : 'border-slate-100 text-slate-300 bg-white cursor-not-allowed'
+              }`}
+              aria-label="Scroll left"
+            >
+              <span className="material-symbols-outlined text-base">chevron_left</span>
+            </button>
+            <button
+              onClick={() => scrollBy('right')}
+              disabled={!canScrollRight}
+              className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-200 ${
+                canScrollRight
+                  ? 'border-slate-300 text-slate-600 hover:border-[#2F80FF] hover:text-[#2F80FF] bg-white cursor-pointer'
+                  : 'border-slate-100 text-slate-300 bg-white cursor-not-allowed'
+              }`}
+              aria-label="Scroll right"
+            >
+              <span className="material-symbols-outlined text-base">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Horizontal scrollable cards track */}
+      <div className="relative mt-10 w-full select-none">
+        {/* Left fade gradient */}
+        <div
+          className={`pointer-events-none absolute left-0 top-0 bottom-0 w-16 z-10 bg-gradient-to-r from-[#F7FAFC] to-transparent transition-opacity duration-300 ${
+            canScrollLeft ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+        {/* Right fade gradient */}
+        <div
+          className={`pointer-events-none absolute right-0 top-0 bottom-0 w-20 z-10 bg-gradient-to-l from-[#F7FAFC] to-transparent transition-opacity duration-300 ${
+            canScrollRight ? 'opacity-100' : 'opacity-0'
+          }`}
         />
 
-        <Button
-          variant="glass"
-          size="md"
-          onClick={onTalkToTeam}
-          icon={<span className="material-symbols-outlined text-sm">arrow_forward</span>}
+        <div
+          ref={scrollRef}
+          onMouseDown={handleMouseDown}
+          onMouseLeave={handleMouseLeaveOrUp}
+          onMouseUp={handleMouseLeaveOrUp}
+          onMouseMove={handleMouseMove}
+          className={`flex gap-6 overflow-x-auto px-4 sm:px-6 lg:px-8 pb-6 hide-scrollbar ${
+            isDragging ? 'cursor-grabbing' : 'cursor-grab'
+          }`}
+          style={{
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
+          }}
         >
-          Request Custom Cohort
-        </Button>
+          <AnimatePresence>
+            {filteredPrograms.map((prog, idx) => {
+              const gradClass = categoryColors[prog.category] || 'from-[#2F80FF] to-[#8EC5FF]';
+              const accentClass = categoryAccent[prog.category] || 'bg-blue-50 text-blue-700 border-blue-100';
+              return (
+                <motion.div
+                  key={prog.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3, delay: idx * 0.05 }}
+                  className="group relative flex-shrink-0 w-[300px] sm:w-[350px]"
+                  style={{ minHeight: '440px' }}
+                  onClick={() => {
+                    if (!isDragging) setActiveProgram(prog);
+                  }}
+                >
+                  {/* Card */}
+                  <div className="h-full flex flex-col bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#2F80FF]/40 transition-all duration-300 hover:-translate-y-1.5">
+                    {/* Top gradient strip */}
+                    <div className={`h-1.5 w-full bg-gradient-to-r ${gradClass}`} />
+
+                    <div className="flex flex-col flex-1 p-7">
+                      {/* Index + category row */}
+                      <div className="flex items-center justify-between mb-6">
+                        <span className="text-[11px] font-bold tracking-[0.15em] text-slate-400 uppercase">
+                          {String(idx + 1).padStart(2, '0')}
+                        </span>
+                        <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${accentClass}`}>
+                          {prog.category}
+                        </span>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="font-display text-2xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-[#2F80FF] transition-colors duration-300">
+                        {prog.title}
+                      </h3>
+
+                      {/* Description */}
+                      <p className="text-sm text-slate-500 leading-relaxed mb-6 flex-1">
+                        {prog.description}
+                      </p>
+
+                      {/* Key topics */}
+                      <ul className="space-y-2 mb-7">
+                        {(prog.keyTopics || []).slice(0, 3).map((topic, ti) => (
+                          <li key={ti} className="flex items-start gap-2.5">
+                            <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 bg-gradient-to-br ${gradClass}`} />
+                            <span className="text-xs text-slate-600 leading-relaxed">{topic}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      {/* Footer meta */}
+                      <div className="mt-auto flex items-center justify-between pt-5 border-t border-slate-100">
+                        <div>
+                          <span className="block text-[10px] uppercase tracking-wider text-slate-400 mb-0.5">Duration</span>
+                          <span className="text-sm font-semibold text-slate-800">{prog.duration}</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="block text-[10px] uppercase tracking-wider text-slate-400 mb-0.5">For</span>
+                          <span className="text-sm font-semibold text-slate-800">{prog.level}</span>
+                        </div>
+                        <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-[#2F80FF] flex items-center justify-center transition-colors duration-300 ml-2 shrink-0">
+                          <span className="material-symbols-outlined text-slate-500 group-hover:text-white text-base transition-colors duration-300">
+                            arrow_forward
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+
+          {/* Spacer so last card doesn't sit against edge */}
+          <div className="shrink-0 w-4" />
+        </div>
       </div>
 
-      {/* Category Pills */}
-      <div className="flex flex-wrap gap-2.5 mb-10 pb-2">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
-              selectedCategory === cat
-                ? 'bg-[#d0bcff] text-[#3c0091] shadow-[0_0_15px_rgba(208,188,255,0.3)]'
-                : 'glass-card text-[#cbc3d7] hover:text-white hover:border-[#d0bcff]/40'
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Program Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredPrograms.map((prog, idx) => (
-          <ProgramCard
-            key={prog.id}
-            program={prog}
-            index={idx}
-            onSelectProgram={(p) => setActiveProgram(p)}
-          />
-        ))}
+      {/* Scroll hint — mobile */}
+      <div className="flex md:hidden items-center justify-center gap-1.5 mt-2 text-xs text-slate-400">
+        <span className="material-symbols-outlined text-sm">swipe</span>
+        Drag or swipe to explore
       </div>
 
       {/* Program Details Modal */}
       <AnimatePresence>
         {activeProgram && (
           <motion.div
-            className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 sm:p-6"
+            className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 sm:p-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setActiveProgram(null)}
           >
             <motion.div
-              className="bg-[#102034] border border-[#d0bcff]/40 rounded-2xl p-6 sm:p-8 max-w-2xl w-full text-[#d3e4fe] relative shadow-2xl overflow-y-auto max-h-[90vh]"
-              initial={{ scale: 0.9, y: 20 }}
+              className="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full text-slate-900 relative shadow-2xl overflow-hidden"
+              initial={{ scale: 0.94, y: 24 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
+              exit={{ scale: 0.94, y: 24 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 26 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                onClick={() => setActiveProgram(null)}
-                className="absolute top-6 right-6 p-2 text-[#cbc3d7] hover:text-white"
-              >
-                <span className="material-symbols-outlined">close</span>
-              </button>
+              {/* Gradient header bar */}
+              <div className={`h-1.5 w-full bg-gradient-to-r ${categoryColors[activeProgram.category] || 'from-[#2F80FF] to-[#8EC5FF]'}`} />
 
-              <div className="flex items-center gap-3 mb-4">
-                <div className="bg-[#a078ff]/20 w-12 h-12 rounded-lg flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[#d0bcff] text-2xl">
-                    {activeProgram.icon}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-xs uppercase tracking-wider text-[#d0bcff] font-semibold">
+              <div className="p-7 sm:p-9 overflow-y-auto max-h-[85vh]">
+                <button
+                  onClick={() => setActiveProgram(null)}
+                  className="absolute top-6 right-6 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-base text-slate-600">close</span>
+                </button>
+
+                {/* Category + title */}
+                <div className="mb-6">
+                  <span className={`inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full border mb-3 ${categoryAccent[activeProgram.category] || 'bg-blue-50 text-blue-700 border-blue-100'}`}>
                     {activeProgram.category}
                   </span>
-                  <h3 className="font-display text-2xl font-bold text-[#d3e4fe]">
+                  <h3 className="font-display text-2xl sm:text-3xl font-bold text-slate-900">
                     {activeProgram.title}
                   </h3>
                 </div>
-              </div>
 
-              <p className="text-base text-[#cbc3d7] mb-6 leading-relaxed">
-                {activeProgram.description}
-              </p>
+                <p className="text-base text-slate-600 mb-7 leading-relaxed">
+                  {activeProgram.description}
+                </p>
 
-              <div className="grid grid-cols-2 gap-4 mb-6 bg-[#1b2b3f] p-4 rounded-xl border border-white/5">
-                <div>
-                  <span className="text-xs text-[#cbc3d7] block">Target Cohort</span>
-                  <span className="text-sm font-semibold text-white">{activeProgram.level}</span>
+                {/* Meta grid */}
+                <div className="grid grid-cols-2 gap-4 mb-7 bg-slate-50 p-5 rounded-xl border border-slate-100">
+                  <div>
+                    <span className="text-[10px] uppercase tracking-widest text-slate-400 block mb-1">Target Cohort</span>
+                    <span className="text-sm font-semibold text-slate-800">{activeProgram.level}</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase tracking-widest text-slate-400 block mb-1">Duration</span>
+                    <span className="text-sm font-semibold text-[#2F80FF]">{activeProgram.duration}</span>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-xs text-[#cbc3d7] block">Program Duration</span>
-                  <span className="text-sm font-semibold text-[#d0bcff]">{activeProgram.duration}</span>
-                </div>
-              </div>
 
-              {activeProgram.keyTopics && (
-                <div className="mb-8">
-                  <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-3">
-                    Key Curriculum Modules
-                  </h4>
-                  <ul className="space-y-2">
-                    {activeProgram.keyTopics.map((topic, idx) => (
-                      <li key={idx} className="flex items-start gap-2.5 text-sm text-[#cbc3d7]">
-                        <span className="material-symbols-outlined text-[#d0bcff] text-base shrink-0 mt-0.5">
-                          check_circle
-                        </span>
-                        <span>{topic}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                {/* Key topics */}
+                {activeProgram.keyTopics && (
+                  <div className="mb-8">
+                    <h4 className="text-xs font-bold text-slate-900 uppercase tracking-widest mb-4">
+                      Key Curriculum Modules
+                    </h4>
+                    <ul className="space-y-3">
+                      {activeProgram.keyTopics.map((topic, idx) => (
+                        <li key={idx} className="flex items-start gap-3 text-sm text-slate-700">
+                          <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 bg-gradient-to-br ${categoryColors[activeProgram.category] || 'from-[#2F80FF] to-[#8EC5FF]'}`} />
+                          <span className="leading-relaxed">{topic}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-              <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-white/10">
-                <Button
-                  variant="purple"
-                  size="md"
-                  className="w-full"
-                  onClick={() => {
-                    setActiveProgram(null);
-                    onTalkToTeam();
-                  }}
-                >
-                  Enroll Your Team
-                </Button>
-                <Button
-                  variant="glass"
-                  size="md"
-                  className="w-full"
-                  onClick={() => setActiveProgram(null)}
-                >
-                  Close Overview
-                </Button>
+                {/* CTA buttons */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-5 border-t border-slate-100">
+                  <Button
+                    variant="primary"
+                    size="md"
+                    className="w-full"
+                    onClick={() => {
+                      setActiveProgram(null);
+                      onTalkToTeam();
+                    }}
+                  >
+                    Enroll Your Team
+                  </Button>
+                  <Button
+                    variant="glass"
+                    size="md"
+                    className="w-full"
+                    onClick={() => setActiveProgram(null)}
+                  >
+                    Close Overview
+                  </Button>
+                </div>
               </div>
             </motion.div>
           </motion.div>

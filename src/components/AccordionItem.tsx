@@ -20,12 +20,12 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({
         className="w-full flex justify-between items-center text-left py-4 hover:bg-slate-50 transition-colors rounded-lg px-3 group focus:outline-none"
         aria-expanded={isOpen}
       >
-        <span className="font-display font-semibold text-slate-900 text-base md:text-lg pr-4 group-hover:text-[#6d3bd7] transition-colors">
+        <span className="font-display font-semibold text-slate-900 text-base md:text-lg pr-4 group-hover:text-[#2F80FF] transition-colors">
           {faq.question}
         </span>
 
         <motion.span
-          className="material-symbols-outlined text-slate-400 group-hover:text-[#6d3bd7] shrink-0"
+          className="material-symbols-outlined text-slate-500 group-hover:text-[#2F80FF] shrink-0"
           animate={{ rotate: isOpen ? 45 : 0 }}
           transition={{ duration: 0.25, ease: 'easeInOut' }}
         >

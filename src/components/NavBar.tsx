@@ -13,11 +13,7 @@ export const NavBar: React.FC<NavBarProps> = ({ onOpenDemo, onNavigateToContact 
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 20);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -27,7 +23,6 @@ export const NavBar: React.FC<NavBarProps> = ({ onOpenDemo, onNavigateToContact 
   const navLinks = [
     { name: 'Programs', href: '#programs' },
     { name: 'Solutions', href: '#features' },
-    { name: 'Enterprise', href: '#hero', active: true },
     { name: 'Success Stories', href: '#testimonials' },
     { name: 'FAQ', href: '#faq' },
   ];
@@ -43,58 +38,77 @@ export const NavBar: React.FC<NavBarProps> = ({ onOpenDemo, onNavigateToContact 
 
   return (
     <>
-      <nav
+      <motion.nav
         id="main-nav"
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? 'bg-[#031427]/90 backdrop-blur-xl border-b border-white/10 shadow-lg py-3'
-            : 'bg-transparent backdrop-blur-md border-b border-white/5 py-4'
+        className={`fixed left-0 right-0 top-0 z-50 flex justify-center transition-all duration-300 ease-out ${
+          isScrolled 
+            ? 'bg-white/80 backdrop-blur-xl border-b border-slate-200 shadow-sm py-3' 
+            : 'bg-transparent border-b border-transparent py-5'
         }`}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="flex items-center justify-between w-full px-6 md:px-12 lg:px-16 2xl:px-24">
           {/* Brand Logo */}
           <a
             href="#hero"
             onClick={(e) => handleScrollTo(e, '#hero')}
-            className="font-display text-2xl md:text-3xl font-bold tracking-tight text-[#d3e4fe] flex items-center gap-2 group"
+            className="flex items-center gap-3 group relative shrink-0"
           >
-            <span className="text-[#d0bcff] group-hover:text-white transition-colors">Accredian</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-[#6d3bd7]/30 text-[#d0bcff] border border-[#6d3bd7]/50 font-medium hidden sm:inline-block">
-              ENTERPRISE
+            <img 
+              src="/logo.webp" 
+              alt="Accredian Logo" 
+              className="h-7 md:h-8 object-contain group-hover:scale-105 transition-transform duration-300" 
+              onError={(e) => {
+                // Fallback if image fails to load
+                (e.target as HTMLImageElement).style.display = 'none';
+                (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            <span className="hidden font-display text-2xl font-bold tracking-tight text-slate-900 group-hover:text-[#2F80FF] transition-colors">
+              Accredian
             </span>
           </a>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-1 lg:gap-2 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleScrollTo(e, link.href)}
-                className={`text-sm font-semibold transition-all duration-200 ${
+                className={`relative px-4 py-2 text-sm font-medium transition-colors duration-300 rounded-full group ${
                   link.active
-                    ? 'text-[#d0bcff] border-b-2 border-[#d0bcff] pb-1'
-                    : 'text-[#cbc3d7] hover:text-[#d0bcff]'
+                    ? 'text-[#2F80FF] bg-[#2F80FF]/5'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/50'
                 }`}
               >
                 {link.name}
+                {link.active && (
+                  <motion.div 
+                    layoutId="nav-indicator"
+                    className="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-[#2F80FF] rounded-full"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
               </a>
             ))}
           </div>
 
           {/* Desktop Right CTA */}
-          <div className="hidden md:flex items-center gap-3">
-            <Button
-              variant="glass"
-              size="sm"
+          <div className="hidden md:flex items-center gap-3 shrink-0">
+            <button
               onClick={onOpenDemo}
+              className="text-sm font-medium text-slate-600 hover:text-slate-900 px-4 py-2 transition-colors"
             >
-              Demo
-            </Button>
+              Log in
+            </button>
             <Button
               variant="primary"
               size="sm"
               onClick={onNavigateToContact}
+              className="shadow-sm hover:shadow-md transition-shadow rounded-full px-6"
             >
               Get Started
             </Button>
@@ -103,40 +117,40 @@ export const NavBar: React.FC<NavBarProps> = ({ onOpenDemo, onNavigateToContact 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-[#d3e4fe] hover:text-white focus:outline-none"
+            className="md:hidden p-2 -mr-2 text-slate-900 hover:bg-slate-100 rounded-full transition-colors focus:outline-none"
             aria-label="Toggle Navigation Menu"
           >
-            <span className="material-symbols-outlined text-3xl">
-              {mobileMenuOpen ? 'close' : 'menu'}
+            <span className="material-symbols-outlined text-2xl">
+              {mobileMenuOpen ? 'close' : 'menu_open'}
             </span>
           </button>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Full-Screen Animated Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            className="fixed inset-0 bg-[#080B14]/95 backdrop-blur-2xl z-40 md:hidden flex flex-col px-6 pt-24 pb-12 justify-between"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-white/95 backdrop-blur-xl z-40 md:hidden flex flex-col pt-24 pb-8 px-6"
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <div className="flex flex-col gap-6">
-              <p className="text-xs uppercase tracking-widest text-[#958ea0] font-semibold mb-2">
-                Enterprise Navigation
+            <div className="flex-1 flex flex-col gap-6">
+              <p className="text-xs uppercase tracking-widest text-slate-400 font-semibold mb-2 pl-2">
+                Menu
               </p>
               {navLinks.map((link, idx) => (
                 <motion.a
                   key={link.name}
                   href={link.href}
                   onClick={(e) => handleScrollTo(e, link.href)}
-                  className={`font-display text-2xl font-bold transition-colors ${
-                    link.active ? 'text-[#d0bcff]' : 'text-[#d3e4fe] hover:text-[#d0bcff]'
+                  className={`font-display text-3xl font-semibold p-2 rounded-2xl transition-colors ${
+                    link.active ? 'text-[#2F80FF] bg-[#2F80FF]/5' : 'text-slate-800 active:bg-slate-100'
                   }`}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 + 0.1 }}
                 >
                   {link.name}
@@ -144,30 +158,35 @@ export const NavBar: React.FC<NavBarProps> = ({ onOpenDemo, onNavigateToContact 
               ))}
             </div>
 
-            <div className="flex flex-col gap-4 mt-8">
+            <motion.div 
+              className="flex flex-col gap-3 mt-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
               <Button
-                variant="purple"
+                variant="outline"
                 size="lg"
-                className="w-full"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  if (onNavigateToContact) onNavigateToContact();
-                }}
-              >
-                Talk to Enterprise Team
-              </Button>
-              <Button
-                variant="glass"
-                size="lg"
-                className="w-full"
+                className="w-full rounded-2xl"
                 onClick={() => {
                   setMobileMenuOpen(false);
                   if (onOpenDemo) onOpenDemo();
                 }}
               >
-                View Platform Demo
+                Log in
               </Button>
-            </div>
+              <Button
+                variant="primary"
+                size="lg"
+                className="w-full rounded-2xl"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  if (onNavigateToContact) onNavigateToContact();
+                }}
+              >
+                Get Started
+              </Button>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -28,22 +28,23 @@ export const HowItWorks: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="bg-[#0b1c30] border border-[#494454] rounded-2xl p-8 sm:p-12 md:p-16 relative overflow-hidden">
+    <section className="snap-section py-28 md:py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="bg-[#0b1c30] border border-[#2F80FF]/30 rounded-3xl p-10 sm:p-14 md:p-18 relative overflow-hidden shadow-2xl">
         {/* Subtle Background Glow */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#6d3bd7]/10 blur-[100px] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#2F80FF]/15 blur-[120px] pointer-events-none" />
 
         <SectionHeader
           title="How It"
           highlightText="Works"
           description="A streamlined 4-step process to upskill your enterprise workforce at scale."
+          mode="dark"
         />
 
-        <div className="relative max-w-5xl mx-auto">
+        <div className="relative max-w-5xl mx-auto mt-12">
           {/* Connector Line for Desktop */}
-          <div className="hidden md:block absolute top-10 left-[12%] right-[12%] h-0.5 bg-[#494454] z-0" />
+          <div className="hidden md:block absolute top-10 left-[12%] right-[12%] h-0.5 bg-slate-700 z-0" />
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-6 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-8 relative z-10">
             {steps.map((step, idx) => (
               <motion.div
                 key={step.stepNumber}
@@ -57,8 +58,8 @@ export const HowItWorks: React.FC = () => {
                 <div
                   className={`w-16 h-16 rounded-full bg-[#031427] flex items-center justify-center mb-6 relative transition-all duration-300 ${
                     idx === 0
-                      ? 'border-2 border-[#d0bcff] text-[#d0bcff] shadow-[0_0_20px_rgba(208,188,255,0.3)]'
-                      : 'border-2 border-[#494454] text-[#cbc3d7] group-hover:border-[#d0bcff] group-hover:text-[#d0bcff]'
+                      ? 'border-2 border-[#8EC5FF] text-[#8EC5FF] shadow-[0_0_20px_rgba(142,197,255,0.4)]'
+                      : 'border-2 border-slate-700 text-slate-400 group-hover:border-[#8EC5FF] group-hover:text-[#8EC5FF]'
                   }`}
                 >
                   <span className="font-display text-xl font-bold">
@@ -66,11 +67,11 @@ export const HowItWorks: React.FC = () => {
                   </span>
                 </div>
 
-                <h4 className="font-display text-lg md:text-xl font-semibold text-[#d3e4fe] mb-2 group-hover:text-[#d0bcff] transition-colors">
+                <h4 className="font-display text-lg md:text-xl font-semibold text-white mb-2.5 group-hover:text-[#8EC5FF] transition-colors">
                   {step.title}
                 </h4>
 
-                <p className="text-xs sm:text-sm text-[#cbc3d7] leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                   {step.description}
                 </p>
               </motion.div>

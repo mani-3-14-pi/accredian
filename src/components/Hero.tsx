@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Button } from './ui/Button';
 
 interface HeroProps {
@@ -7,11 +7,27 @@ interface HeroProps {
   onOpenDemo: () => void;
 }
 
+const subtitles = [
+  "Transform your workforce with executive-level education designed for scale. Data-driven insights, premium curation, and measurable impact.",
+  "Empower your workforce with world-class executive education, backed by data-driven insights, curated learning, and measurable business outcomes.",
+  "Upskill your organization with expertly curated executive programs that deliver measurable results and lasting business transformation.",
+  "Enable continuous workforce growth with scalable executive education, intelligent learning pathways, and proven business impact."
+];
+
 export const Hero: React.FC<HeroProps> = ({ onTalkToTeam, onOpenDemo }) => {
+  const [currentSubtitle, setCurrentSubtitle] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSubtitle((prev) => (prev + 1) % subtitles.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <section
       id="hero"
-      className="relative min-h-[90vh] md:min-h-[870px] flex flex-col items-center justify-center pt-28 pb-20 px-4 sm:px-6 lg:px-8 text-center max-w-7xl mx-auto overflow-hidden"
+      className="snap-section sticky top-0 h-[100vh] flex flex-col items-center justify-start pt-32 md:pt-40 pb-20 px-4 sm:px-6 lg:px-8 text-center w-full overflow-hidden z-0"
     >
       {/* Background Animated Aurora Glow */}
       <motion.div
@@ -34,43 +50,34 @@ export const Hero: React.FC<HeroProps> = ({ onTalkToTeam, onOpenDemo }) => {
 
       {/* Hero Main Content */}
       <div className="relative z-10 flex flex-col items-center max-w-5xl">
-        {/* Enterprise Pill Badge */}
-        <motion.div
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#494454] glass-card mb-8 cursor-pointer hover:border-[#d0bcff]/50 transition-colors"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <span className="material-symbols-outlined text-[#d0bcff] text-base filled">
-            bolt
-          </span>
-          <span className="text-xs md:text-sm font-semibold text-[#cbc3d7] uppercase tracking-widest">
-            Enterprise Learning Mode
-          </span>
-        </motion.div>
-
         {/* Display Title with Gradient Highlight */}
         <motion.h1
-          className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter text-[#d3e4fe] mb-6 leading-[1.08] max-w-5xl"
+          className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter text-slate-900 mb-6 leading-[1.08] max-w-5xl"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
         >
           Upskill at the speed of{' '}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d0bcff] via-[#a078ff] to-[#6d3bd7]">
+          <span className="inline-block text-[1.08em] tracking-[0.04em] text-transparent bg-clip-text bg-gradient-to-r from-[#8EC5FF] via-[#2F80FF] to-[#0A4BB5] ml-1.5">
             Enterprise
           </span>
         </motion.h1>
 
         {/* Supporting Subtitle */}
-        <motion.p
-          className="font-sans text-lg sm:text-xl md:text-2xl text-[#cbc3d7] max-w-2xl mb-12 leading-relaxed"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.25 }}
-        >
-          Transform your workforce with executive-level education designed for scale. Data-driven insights, premium curation, and measurable impact.
-        </motion.p>
+        <div className="min-h-[120px] sm:min-h-[96px] md:min-h-[80px] w-full max-w-2xl mb-12 flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={currentSubtitle}
+              className="font-sans text-lg sm:text-xl md:text-2xl text-slate-600 leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+              {subtitles[currentSubtitle]}
+            </motion.p>
+          </AnimatePresence>
+        </div>
 
         {/* Action CTAs */}
         <motion.div
@@ -80,7 +87,7 @@ export const Hero: React.FC<HeroProps> = ({ onTalkToTeam, onOpenDemo }) => {
           transition={{ duration: 0.8, delay: 0.4 }}
         >
           <Button
-            variant="purple"
+            variant="primary"
             size="lg"
             isMagnetic
             onClick={onTalkToTeam}
@@ -100,7 +107,7 @@ export const Hero: React.FC<HeroProps> = ({ onTalkToTeam, onOpenDemo }) => {
             onClick={onOpenDemo}
             className="w-full sm:w-auto"
             icon={
-              <span className="material-symbols-outlined text-lg text-[#d0bcff]">
+              <span className="material-symbols-outlined text-lg text-[#2F80FF]">
                 play_circle
               </span>
             }
@@ -114,16 +121,16 @@ export const Hero: React.FC<HeroProps> = ({ onTalkToTeam, onOpenDemo }) => {
       {/* Bouncing Scroll Cue */}
       <motion.a
         href="#marquee"
-        className="absolute bottom-6 md:bottom-10 flex flex-col items-center gap-1.5 opacity-70 hover:opacity-100 transition-opacity cursor-pointer z-10"
+        className="absolute bottom-2 md:bottom-4 flex flex-col items-center gap-1.5 opacity-70 hover:opacity-100 transition-opacity cursor-pointer z-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.8 }}
-        transition={{ delay: 1, duration: 0.5 }}
+        transition={{ delay: 2, duration: 0.5 }}
       >
-        <span className="font-sans text-[11px] text-[#cbc3d7] uppercase tracking-widest font-semibold">
+        <span className="font-sans text-[11px] text-slate-500 uppercase tracking-widest font-semibold">
           Discover
         </span>
         <motion.span
-          className="material-symbols-outlined text-[#cbc3d7]"
+          className="material-symbols-outlined text-slate-500"
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
         >

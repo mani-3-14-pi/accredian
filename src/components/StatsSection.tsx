@@ -36,7 +36,7 @@ export const StatsSection: React.FC = () => {
   ];
 
   return (
-    <section className="bg-[#080B14] py-24 relative z-10 px-4 sm:px-6 lg:px-8">
+    <section className="snap-section bg-[#F7FAFC] py-28 md:py-32 relative z-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <SectionHeader
           title="The Numbers Behind Our"
@@ -44,7 +44,7 @@ export const StatsSection: React.FC = () => {
           description="Metrics that validate our approach to executive education and enterprise upskilling at an unprecedented scale."
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat, idx) => (
             <StatTile key={stat.id} stat={stat} delay={idx * 0.1} />
           ))}

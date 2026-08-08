@@ -73,7 +73,7 @@ export const ContactForm: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="bg-[#f8fafc] text-slate-900 py-24 px-4 sm:px-6 lg:px-8 w-full border-t border-slate-200">
+    <section id="contact" className="snap-section bg-[#FFFFFF] text-slate-900 py-28 md:py-32 px-4 sm:px-6 lg:px-8 w-full border-t border-slate-200">
       <div className="max-w-4xl mx-auto">
         <SectionHeader
           title="Transform Your Workforce"
@@ -82,7 +82,7 @@ export const ContactForm: React.FC = () => {
           mode="light"
         />
 
-        <div className="bg-white border border-slate-200 rounded-2xl p-8 sm:p-12 shadow-xl relative">
+        <div className="bg-white border border-slate-200 rounded-t-[2rem] rounded-b-2xl p-10 sm:p-14 shadow-xl relative mt-10">
           {status === 'success' ? (
             <motion.div
               className="text-center py-12 flex flex-col items-center"
@@ -103,7 +103,7 @@ export const ContactForm: React.FC = () => {
                 Reference ID: <span className="font-semibold text-slate-800">{leadId}</span>
               </div>
               <Button
-                variant="purple"
+                variant="primary"
                 onClick={() => {
                   setStatus('idle');
                   setFormData({
@@ -130,7 +130,7 @@ export const ContactForm: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     First Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -140,12 +140,12 @@ export const ContactForm: React.FC = () => {
                     value={formData.firstName}
                     onChange={handleChange}
                     placeholder="Jane"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:border-[#6d3bd7] focus:ring-2 focus:ring-[#6d3bd7]/20 transition-all"
+                    className="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-base placeholder:text-slate-400 hover:border-slate-400 focus:outline-none focus:border-[#2F80FF] focus:ring-4 focus:ring-[#2F80FF]/15 transition-all shadow-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Last Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -155,14 +155,14 @@ export const ContactForm: React.FC = () => {
                     value={formData.lastName}
                     onChange={handleChange}
                     placeholder="Doe"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:border-[#6d3bd7] focus:ring-2 focus:ring-[#6d3bd7]/20 transition-all"
+                    className="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-base placeholder:text-slate-400 hover:border-slate-400 focus:outline-none focus:border-[#2F80FF] focus:ring-4 focus:ring-[#2F80FF]/15 transition-all shadow-sm"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Work Email <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -172,12 +172,12 @@ export const ContactForm: React.FC = () => {
                     value={formData.workEmail}
                     onChange={handleChange}
                     placeholder="jane.doe@company.com"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:border-[#6d3bd7] focus:ring-2 focus:ring-[#6d3bd7]/20 transition-all"
+                    className="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-base placeholder:text-slate-400 hover:border-slate-400 focus:outline-none focus:border-[#2F80FF] focus:ring-4 focus:ring-[#2F80FF]/15 transition-all shadow-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">
                     Company Name <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -187,13 +187,13 @@ export const ContactForm: React.FC = () => {
                     value={formData.company}
                     onChange={handleChange}
                     placeholder="Acme Enterprise Inc."
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:border-[#6d3bd7] focus:ring-2 focus:ring-[#6d3bd7]/20 transition-all"
+                    className="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-base placeholder:text-slate-400 hover:border-slate-400 focus:outline-none focus:border-[#2F80FF] focus:ring-4 focus:ring-[#2F80FF]/15 transition-all shadow-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Phone Number
                 </label>
                 <input
@@ -202,12 +202,12 @@ export const ContactForm: React.FC = () => {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="+1 (555) 000-0000"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:border-[#6d3bd7] focus:ring-2 focus:ring-[#6d3bd7]/20 transition-all"
+                  className="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-base placeholder:text-slate-400 hover:border-slate-400 focus:outline-none focus:border-[#2F80FF] focus:ring-4 focus:ring-[#2F80FF]/15 transition-all shadow-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                <label className="block text-sm font-medium text-slate-700 mb-1.5">
                   Message / Cohort Requirements
                 </label>
                 <textarea
@@ -216,13 +216,13 @@ export const ContactForm: React.FC = () => {
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="Tell us about your team size, learning objectives, or desired customization..."
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:border-[#6d3bd7] focus:ring-2 focus:ring-[#6d3bd7]/20 transition-all resize-none"
+                  className="w-full px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-base placeholder:text-slate-400 hover:border-slate-400 focus:outline-none focus:border-[#2F80FF] focus:ring-4 focus:ring-[#2F80FF]/15 transition-all shadow-sm resize-none"
                 />
               </div>
 
               <Button
                 type="submit"
-                variant="purple"
+                variant="primary"
                 size="lg"
                 className="w-full py-4 text-base font-semibold shadow-lg"
                 disabled={status === 'loading'}

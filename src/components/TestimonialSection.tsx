@@ -44,7 +44,7 @@ export const TestimonialSection: React.FC = () => {
   ];
 
   return (
-    <section id="testimonials" className="bg-[#f8fafc] text-slate-900 py-24 px-4 sm:px-6 lg:px-8 w-full border-t border-slate-200">
+    <section id="testimonials" className="snap-section bg-[#FFFFFF] text-slate-900 py-28 md:py-32 px-4 sm:px-6 lg:px-8 w-full border-t border-slate-200">
       <div className="max-w-7xl mx-auto">
         <SectionHeader
           title="Client"
@@ -53,7 +53,7 @@ export const TestimonialSection: React.FC = () => {
           mode="light"
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-12">
           {testimonials.map((test, idx) => (
             <TestimonialCard key={test.id} testimonial={test} index={idx} />
           ))}

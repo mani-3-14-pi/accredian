@@ -23,7 +23,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080B14] text-[#d3e4fe] flex flex-col font-sans antialiased selection:bg-[#a078ff]/30 selection:text-white relative">
+    <div className="h-screen overflow-y-auto snap-y-mandatory bg-[#F7FAFC] text-slate-900 flex flex-col font-sans antialiased selection:bg-[#8EC5FF]/30 selection:text-white relative">
       {/* Navigation */}
       <NavBar
         onOpenDemo={() => setIsDemoModalOpen(true)}
@@ -38,7 +38,9 @@ export default function App() {
           onOpenDemo={() => setIsDemoModalOpen(true)}
         />
 
-        {/* Partner Logo Marquee */}
+        {/* Content Wrapper to slide over sticky Hero */}
+        <div className="relative z-10 bg-[#F7FAFC] shadow-xl">
+          {/* Partner Logo Marquee */}
         <MarqueeStrip />
 
         {/* Live Metrics & Stats */}
@@ -60,7 +62,8 @@ export default function App() {
         <FAQSection />
 
         {/* Lead Capture Consultation Form */}
-        <ContactForm />
+          <ContactForm />
+        </div>
       </main>
 
       {/* Footer */}

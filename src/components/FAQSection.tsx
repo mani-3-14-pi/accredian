@@ -44,7 +44,7 @@ export const FAQSection: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="bg-white text-slate-900 py-24 px-4 sm:px-6 lg:px-8 w-full border-t border-slate-200">
+    <section id="faq" className="snap-section bg-white text-slate-900 py-28 md:py-32 px-4 sm:px-6 lg:px-8 w-full border-t border-slate-200">
       <div className="max-w-3xl mx-auto">
         <SectionHeader
           title="Frequently Asked"
@@ -53,7 +53,7 @@ export const FAQSection: React.FC = () => {
           mode="light"
         />
 
-        <div className="mt-8 space-y-2">
+        <div className="mt-12 space-y-3">
           {faqs.map((faq) => (
             <AccordionItem
               key={faq.id}
