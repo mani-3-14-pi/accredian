@@ -23,23 +23,29 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
   const isDark = mode === 'dark';
 
   return (
-    <motion.div
+    <div
       className={`${align === 'center' ? 'text-center mx-auto' : 'text-left'} max-w-3xl ${
         className.includes('mb-') ? '' : 'mb-12 md:mb-16'
       } ${className}`}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.5 }}
     >
       {badge && (
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#DCEBFF] glass-card mb-4 text-xs font-semibold uppercase tracking-widest text-slate-600">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.4 }}
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#DCEBFF] glass-card mb-4 text-xs font-semibold uppercase tracking-widest text-slate-600"
+        >
           <span className="material-symbols-outlined text-[#2F80FF] text-sm filled">bolt</span>
           <span>{badge}</span>
-        </div>
+        </motion.div>
       )}
 
-      <h2
+      <motion.h2
+        initial={{ opacity: 0, y: 15 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-50px' }}
+        transition={{ duration: 0.5, delay: 0.05 }}
         className={`font-display text-3xl md:text-5xl font-bold tracking-tight mb-4 ${
           isDark ? 'text-slate-900' : 'text-slate-900'
         }`}
@@ -50,17 +56,21 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
             {highlightText}
           </span>
         )}
-      </h2>
+      </motion.h2>
 
       {description && (
-        <p
+        <motion.p
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.5, delay: 0.2 }}
           className={`text-base md:text-lg leading-relaxed ${
             isDark ? 'text-slate-600' : 'text-slate-600'
           }`}
         >
           {description}
-        </p>
+        </motion.p>
       )}
-    </motion.div>
+    </div>
   );
 };

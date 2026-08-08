@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { SectionHeader } from './ui/SectionHeader';
 import { AccordionItem } from './AccordionItem';
 import { FAQItem } from '../types';
@@ -53,7 +54,13 @@ export const FAQSection: React.FC = () => {
           mode="light"
         />
 
-        <div className="mt-12 space-y-3">
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+          className="mt-12 space-y-3"
+        >
           {faqs.map((faq) => (
             <AccordionItem
               key={faq.id}
@@ -62,7 +69,7 @@ export const FAQSection: React.FC = () => {
               onToggle={() => handleToggle(faq.id)}
             />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -17,7 +17,7 @@ export const TestimonialCard: React.FC<TestimonialCardProps> = ({
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      transition={{ duration: 0.5, delay: 0.35 + index * 0.1 }}
     >
       {/* Company Logo */}
       <div className="h-10 mb-6 flex items-center">

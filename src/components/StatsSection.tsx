@@ -46,7 +46,7 @@ export const StatsSection: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat, idx) => (
-            <StatTile key={stat.id} stat={stat} delay={idx * 0.1} />
+            <StatTile key={stat.id} stat={stat} delay={0.35 + idx * 0.1} />
           ))}
         </div>
       </div>

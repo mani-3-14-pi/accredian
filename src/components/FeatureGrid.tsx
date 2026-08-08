@@ -76,8 +76,8 @@ export const FeatureGrid: React.FC = () => {
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
 
       const now = Date.now();
-      // Throttle wheel steps to prevent rapid skipping
-      if (now - lastWheelTime.current < 350) {
+      // Lockout window (450ms) to prevent rapid skipping during multi-scroll bursts
+      if (now - lastWheelTime.current < 450) {
         if (
           (e.deltaY > 0 && activeIndex < features.length - 1) ||
           (e.deltaY < 0 && activeIndex > 0)
@@ -137,13 +137,17 @@ export const FeatureGrid: React.FC = () => {
         />
 
         {/* Outer Cards Container Box with Thin Black/Slate Border */}
-        <div
+        <motion.div
           ref={stageRef}
-          className="relative max-w-4xl mx-auto min-h-[380px] sm:min-h-[400px] md:min-h-[420px] flex items-center justify-center my-6 md:my-10 border border-slate-900/15 rounded-3xl bg-white/50 backdrop-blur-sm p-4 sm:p-6 shadow-sm"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, delay: 0.35 }}
+          className="relative max-w-4xl mx-auto min-h-[420px] sm:min-h-[450px] md:min-h-[480px] flex items-center justify-center my-6 md:my-10 rounded-3xl bg-white/50 backdrop-blur-sm p-4 sm:p-6"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="relative w-full h-[320px] sm:h-[350px] md:h-[370px] flex items-center justify-center overflow-visible">
+          <div className="relative w-full h-[360px] sm:h-[390px] md:h-[420px] flex items-center justify-center overflow-visible">
             {features.map((feat, idx) => {
               const distance = idx - activeIndex;
               const isCenter = distance === 0;
@@ -202,7 +206,7 @@ export const FeatureGrid: React.FC = () => {
               return (
                 <motion.div
                   key={feat.id}
-                  className="absolute w-[88%] sm:w-[410px] md:w-[450px] cursor-pointer"
+                  className="absolute w-[90%] sm:w-[440px] md:w-[490px] cursor-pointer"
                   animate={{
                     x: xOffset,
                     y: yOffset,
@@ -270,7 +274,7 @@ export const FeatureGrid: React.FC = () => {
               );
             })}
           </div>
-        </div>
+        </motion.div>
 
         {/* Morph Controls & Indicators */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 max-w-xl mx-auto pt-2">

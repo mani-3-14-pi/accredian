@@ -171,34 +171,65 @@ export const ProgramGrid: React.FC<ProgramGridProps> = ({ onTalkToTeam }) => {
     return () => el.removeEventListener('scroll', updateScrollState);
   }, [updateScrollState]);
 
-  // Handle wheel events directly on the scroll track
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+
+  // Smoothly scroll to active card index
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
+
+    const firstChild = el.firstElementChild?.firstElementChild as HTMLElement;
+    const cardWidth = firstChild ? firstChild.clientWidth : 350;
+    const stepWidth = cardWidth + 24;
+
+    el.scrollTo({ left: activeCardIndex * stepWidth, behavior: 'smooth' });
+  }, [activeCardIndex]);
+
+  // Handle wheel events directly on the scroll track: 1 scroll = 1 next/prev card tile (450ms lockout)
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    let lastWheelTime = 0;
 
     const handleWheel = (e: WheelEvent) => {
       // Allow natural horizontal trackpad swipes
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
 
-      const maxScroll = el.scrollWidth - el.clientWidth;
-      if (maxScroll <= 0) return;
+      const now = Date.now();
+      if (now - lastWheelTime < 450) {
+        // Prevent scroll stacking within 450ms lockout
+        const atStart = activeCardIndex === 0 && e.deltaY < 0;
+        const atEnd = activeCardIndex >= filteredPrograms.length - 1 && e.deltaY > 0;
+        if (!atStart && !atEnd) {
+          e.preventDefault();
+        }
+        return;
+      }
 
-      const atStart = el.scrollLeft <= 2 && e.deltaY < 0;
-      const atEnd = el.scrollLeft >= maxScroll - 2 && e.deltaY > 0;
+      const atStart = activeCardIndex === 0 && e.deltaY < 0;
+      const atEnd = activeCardIndex >= filteredPrograms.length - 1 && e.deltaY > 0;
 
       // Allow vertical page scroll if at boundaries
       if (atStart || atEnd) return;
 
       e.preventDefault();
-      el.scrollLeft += e.deltaY * 1.5;
+      lastWheelTime = now;
+
+      if (e.deltaY > 0) {
+        setActiveCardIndex((prev) => Math.min(prev + 1, filteredPrograms.length - 1));
+      } else {
+        setActiveCardIndex((prev) => Math.max(prev - 1, 0));
+      }
     };
 
     el.addEventListener('wheel', handleWheel, { passive: false });
     return () => el.removeEventListener('wheel', handleWheel);
-  }, [filteredPrograms]);
+  }, [activeCardIndex, filteredPrograms.length]);
 
   // Reset scroll on category change
   useEffect(() => {
+    setActiveCardIndex(0);
     if (scrollRef.current) {
       scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
     }
@@ -207,11 +238,10 @@ export const ProgramGrid: React.FC<ProgramGridProps> = ({ onTalkToTeam }) => {
   }, [selectedCategory, updateScrollState]);
 
   const scrollBy = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({
-        left: direction === 'right' ? 380 : -380,
-        behavior: 'smooth',
-      });
+    if (direction === 'right') {
+      setActiveCardIndex((prev) => Math.min(prev + 1, filteredPrograms.length - 1));
+    } else {
+      setActiveCardIndex((prev) => Math.max(prev - 1, 0));
     }
   };
 
@@ -349,7 +379,7 @@ export const ProgramGrid: React.FC<ProgramGridProps> = ({ onTalkToTeam }) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3, delay: idx * 0.05 }}
+                  transition={{ duration: 0.3, delay: 0.35 + idx * 0.05 }}
                   className="group relative flex-shrink-0 w-[300px] sm:w-[350px]"
                   style={{ minHeight: '440px' }}
                   onClick={() => {

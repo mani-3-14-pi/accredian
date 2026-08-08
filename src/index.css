@@ -83,11 +83,13 @@
 /* Page Mandatory Section Snapping */
 .snap-y-mandatory {
   scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth is intentionally omitted — it conflicts with
+     the browser's native snap physics and causes jank/double-animations */
 }
 
 .snap-section {
   scroll-snap-align: start;
-  scroll-snap-stop: always;
-  scroll-margin-top: 4.5rem;
+  /* scroll-snap-stop: always removed — forces browser to stop at every point
+     regardless of momentum, causing double-snap jitter on variable-height sections */
+  scroll-margin-top: 0;
 }
