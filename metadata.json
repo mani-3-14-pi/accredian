@@ -1,0 +1,8 @@
+{
+  "name": "Remix accredian",
+  "description": "Imported from GitHub: mani-3-14-pi/accredian",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
