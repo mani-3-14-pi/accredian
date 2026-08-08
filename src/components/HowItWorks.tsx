@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'motion/react';
-import { Search, DollarSign, Users, TrendingUp } from 'lucide-react';
+import { Target, Factory, Lightbulb, TrendingUp } from 'lucide-react';
 
 const steps = [
   {
@@ -11,15 +11,9 @@ const steps = [
     title: 'Program Focused',
     description:
       'Choose from executive, certificate and postgraduate learning paths.',
-    nicheLabel: 'Your Niche',
-    nicheValue: 'Untapped & High-Value',
-    metrics: [
-      { icon: Search, label: 'Viral Angle', value: 'Identified & Ready' },
-      { icon: DollarSign, label: 'Revenue Model', value: 'Zero Upfront Cost' },
-      { icon: Users, label: 'Audience Fit', value: 'Highly Scalable' },
-      { icon: TrendingUp, label: 'Growth Opportunity', value: 'Massive Upside' },
-    ],
-    progressLabel: 'Partnership Terms: Transparent & Fair',
+    image: '/senior-management-v2.webp',
+    icon: Target,
+    iconColor: '#E11D48',
     accent: '#2F80FF',
     accent2: '#8EC5FF',
   },
@@ -29,15 +23,9 @@ const steps = [
     title: 'Industry Focused',
     description:
       'Build expertise tailored to the needs of your industry.',
-    nicheLabel: 'Your Learning Path',
-    nicheValue: 'Tailored & Optimized',
-    metrics: [
-      { icon: Search, label: 'Lab Sandboxes', value: 'Live & Ready' },
-      { icon: DollarSign, label: 'Capstone Projects', value: 'Assigned' },
-      { icon: Users, label: 'Delivery Speed', value: 'Accelerated' },
-      { icon: TrendingUp, label: 'Skill Uplift', value: 'Measurable' },
-    ],
-    progressLabel: 'Curriculum Terms: Outcome-Driven & Verified',
+    image: '/project-management-v2.webp',
+    icon: Factory,
+    iconColor: '#111827',
     accent: '#8EC5FF',
     accent2: '#2F80FF',
   },
@@ -47,15 +35,9 @@ const steps = [
     title: 'Skill Focused',
     description:
       'Develop in-demand skills across AI, analytics, design, cloud and more.',
-    nicheLabel: 'Your Training Mode',
-    nicheValue: 'Live & Interactive',
-    metrics: [
-      { icon: Users, label: 'Expert Mentors', value: 'Assigned' },
-      { icon: Search, label: 'Office Hours', value: 'Daily' },
-      { icon: DollarSign, label: 'Sessions', value: 'Live Exec' },
-      { icon: TrendingUp, label: 'Completion', value: 'Tracked' },
-    ],
-    progressLabel: 'Mentorship Terms: Hands-On & Immersive',
+    image: '/data-science-v2.webp',
+    icon: Lightbulb,
+    iconColor: '#F59E0B',
     accent: '#2F80FF',
     accent2: '#8EC5FF',
   },
@@ -65,15 +47,9 @@ const steps = [
     title: 'Career Level',
     description:
       'Learning designed for leaders, professionals and emerging talent.',
-    nicheLabel: 'Your Achievement',
-    nicheValue: 'Verified & Certified',
-    metrics: [
-      { icon: TrendingUp, label: 'ROI Tracking', value: 'Real-Time' },
-      { icon: DollarSign, label: 'Certificate', value: 'Verified' },
-      { icon: Users, label: 'Recognition', value: 'Industry-Wide' },
-      { icon: Search, label: 'Career Impact', value: 'Massive Upside' },
-    ],
-    progressLabel: 'Certification Terms: Globally Recognized',
+    image: '/digital-transformation-v2.webp',
+    icon: TrendingUp,
+    iconColor: '#2563EB',
     accent: '#8EC5FF',
     accent2: '#2F80FF',
   },
@@ -110,11 +86,11 @@ export const HowItWorks: React.FC = () => {
                 transition={{ duration: 0.6 }}
               >
                 <h2 className="hiw-sticky-heading">
-                  Tailored<br />Course<br />Segmentation
+                  Learning,<br />Your Way
                 </h2>
                 <div className="hiw-sticky-rule" />
                 <p className="hiw-sticky-sub">
-                  Explore Custom-fit Courses Designed to Address Every Professional Focus
+                  The right course for every career path.
                 </p>
               </motion.div>
             </div>
@@ -171,62 +147,20 @@ export const HowItWorks: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
             >
-              {/* Pill label */}
-              <span
-                className="hiw-pill"
-                style={{ color: step.accent, borderColor: `${step.accent}40`, background: `${step.accent}12` }}
-              >
-                {step.num} / {step.label}
-              </span>
-
-              {/* Title */}
-              <h3 className="hiw-card-title">{step.title}</h3>
-
-              {/* Description */}
-              <p className="hiw-card-desc">{step.description}</p>
-
-              {/* Dashboard mockup */}
-              <div className="hiw-mock">
-                {/* Mock header */}
-                <div className="hiw-mock-header">
-                  <div className="hiw-mock-dot" style={{ background: step.accent, boxShadow: `0 0 6px ${step.accent}` }} />
-                  <span className="hiw-mock-report">
-                    {step.label.charAt(0) + step.label.slice(1).toLowerCase()} Report
-                  </span>
-                  <span className="hiw-mock-active">ACTIVE</span>
+              <div className="hiw-card-simple">
+                <div className="hiw-card-simple-img-wrapper">
+                  <img src={step.image} alt={step.title} className="hiw-card-simple-img" />
                 </div>
-
-                {/* Niche label */}
-                <div className="hiw-mock-niche-label">{step.nicheLabel}</div>
-                <div className="hiw-mock-niche-value">{step.nicheValue}</div>
-
-                {/* 2×2 Metrics */}
-                <div className="hiw-mock-grid">
-                  {step.metrics.map((m) => (
-                    <div key={m.label} className="hiw-mock-metric">
-                      <div className="hiw-mock-metric-top">
-                        <span className="hiw-mock-metric-icon">
-                          <m.icon size={14} className="opacity-70" />
-                        </span>
-                        <span className="hiw-mock-metric-label">{m.label}</span>
-                      </div>
-                      <div className="hiw-mock-metric-value">{m.value}</div>
+                <div className="hiw-card-simple-content-wrapper">
+                  <div className="hiw-card-simple-content">
+                    <div className="hiw-card-simple-text">
+                      <h4 className="hiw-card-simple-title">{step.title}</h4>
+                      <p className="hiw-card-simple-desc">{step.description}</p>
                     </div>
-                  ))}
-                </div>
-
-                {/* Progress bar */}
-                <div className="hiw-mock-progress-track">
-                  <div
-                    className="hiw-mock-progress-fill"
-                    style={{
-                      width: `${(idx + 1) * 25}%`,
-                      background: `linear-gradient(90deg, ${step.accent}, ${step.accent2})`,
-                    }}
-                  />
-                </div>
-                <div className="hiw-mock-progress-label" style={{ color: step.accent }}>
-                  {step.progressLabel}
+                    <div className="hiw-card-simple-icon" style={{ color: step.iconColor }}>
+                      <step.icon size={44} strokeWidth={2.5} />
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -282,17 +216,17 @@ export const HowItWorks: React.FC = () => {
         .hiw-sticky-inner {
           position: relative;
           z-index: 1;
-          padding: 3rem 2.5rem;
+          padding: 2.5rem 2.5rem;
         }
 
         .hiw-sticky-heading {
           font-family: 'Inter', sans-serif;
-          font-size: clamp(3rem, 5vw, 4.5rem);
+          font-size: clamp(2.5rem, 4vw, 3.5rem);
           font-weight: 800;
-          line-height: 1.05;
+          line-height: 1.1;
           color: #0f172a;
           letter-spacing: -0.01em;
-          margin: 0 0 1.5rem;
+          margin: 0 0 1.25rem;
         }
 
         .hiw-sticky-rule {
@@ -304,11 +238,11 @@ export const HowItWorks: React.FC = () => {
         }
 
         .hiw-sticky-sub {
-          font-size: 0.92rem;
-          color: #334155;
-          line-height: 1.7;
+          font-size: 1rem;
+          color: #475569;
+          line-height: 1.6;
           margin: 0;
-          max-width: 220px;
+          max-width: 240px;
         }
 
         /* ─── CENTER column ─── */
@@ -410,144 +344,68 @@ export const HowItWorks: React.FC = () => {
           padding-bottom: 16px;
         }
 
-        .hiw-pill {
-          display: inline-block;
-          font-size: 0.65rem;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          padding: 0.35rem 0.8rem;
-          border-radius: 999px;
-          border: 1px solid #DCEBFF;
-          background: #F7FAFC;
-          margin-bottom: 1.5rem;
-        }
-
-        .hiw-card-title {
-          font-family: 'Inter', sans-serif;
-          font-size: clamp(1.8rem, 2.5vw, 2.25rem);
-          font-weight: 700;
-          color: #0f172a;
-          line-height: 1.2;
-          letter-spacing: -0.01em;
-          margin: 0 0 1rem;
-        }
-
-        .hiw-card-desc {
-          font-size: 0.97rem;
-          color: #475569;
-          line-height: 1.75;
-          margin: 0 0 1.75rem;
-          max-width: 520px;
-        }
-
-        /* ─── Dashboard mockup ─── */
-        .hiw-mock {
-          background: #F7FAFC;
-          border: 1px solid #DCEBFF;
-          border-radius: 12px;
-          padding: 1.75rem;
+        .hiw-card-simple {
+          background: #E2E8F0;
+          border-radius: 36px;
+          overflow: hidden;
+          padding-bottom: 24px;
           box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
-        .hiw-mock-header {
+        .hiw-card-simple-img-wrapper {
+          width: 100%;
+          height: 320px;
+          background: #334155;
+        }
+
+        .hiw-card-simple-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 36px 36px 0 0;
+        }
+
+        .hiw-card-simple-content-wrapper {
+          padding: 0 24px;
+          margin-top: -60px;
+          position: relative;
+          z-index: 2;
+        }
+
+        .hiw-card-simple-content {
+          background: #FFFFFF;
+          border-radius: 20px;
+          padding: 24px 32px;
           display: flex;
           align-items: center;
-          gap: 0.6rem;
-          margin-bottom: 1.25rem;
+          justify-content: space-between;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+          gap: 20px;
         }
 
-        .hiw-mock-dot {
-          width: 6px; height: 6px;
-          border-radius: 50%;
-          flex-shrink: 0;
-        }
-
-        .hiw-mock-report {
-          font-size: 0.75rem;
-          color: #64748b;
-          letter-spacing: 0.05em;
+        .hiw-card-simple-text {
           flex: 1;
         }
 
-        .hiw-mock-active {
-          font-size: 0.55rem;
+        .hiw-card-simple-title {
+          font-family: 'Inter', sans-serif;
+          font-size: 1.6rem;
           font-weight: 800;
-          letter-spacing: 0.15em;
-          color: #059669;
-          padding: 0.25rem 0.6rem;
-          border-radius: 999px;
-          border: 1px solid rgba(16, 185, 129, 0.2);
-          background: rgba(16, 185, 129, 0.1);
+          color: #020617;
+          margin: 0 0 0.5rem;
+          letter-spacing: -0.01em;
         }
 
-        .hiw-mock-niche-label {
-          font-size: 0.7rem;
-          color: #64748b;
-          margin-bottom: 0.4rem;
+        .hiw-card-simple-desc {
+          font-size: 1rem;
+          color: #475569;
+          font-style: italic;
+          line-height: 1.4;
+          margin: 0;
         }
 
-        .hiw-mock-niche-value {
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: #0f172a;
-          margin-bottom: 1.25rem;
-        }
-
-        .hiw-mock-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 0.75rem;
-          margin-bottom: 1.25rem;
-        }
-
-        .hiw-mock-metric {
-          background: #FFFFFF;
-          border: 1px solid #DCEBFF;
-          border-radius: 8px;
-          padding: 0.85rem 1rem;
-        }
-
-        .hiw-mock-metric-top {
-          display: flex;
-          align-items: center;
-          gap: 0.4rem;
-          margin-bottom: 0.4rem;
-        }
-
-        .hiw-mock-metric-icon {
-          display: none; /* Hidden to match screenshot */
-        }
-
-        .hiw-mock-metric-label {
-          font-size: 0.65rem;
-          color: #64748b;
-          letter-spacing: 0.02em;
-        }
-
-        .hiw-mock-metric-value {
-          font-size: 0.85rem;
-          font-weight: 700;
-          color: #0f172a;
-        }
-
-        .hiw-mock-progress-track {
-          height: 4px;
-          background: #DCEBFF;
-          border-radius: 999px;
-          overflow: hidden;
-          margin-bottom: 0.6rem;
-        }
-
-        .hiw-mock-progress-fill {
-          height: 100%;
-          border-radius: 999px;
-          transition: width 0.6s ease;
-        }
-
-        .hiw-mock-progress-label {
-          font-size: 0.72rem;
-          font-weight: 600;
+        .hiw-card-simple-icon {
+          flex-shrink: 0;
         }
 
         /* ─── Responsive ─── */

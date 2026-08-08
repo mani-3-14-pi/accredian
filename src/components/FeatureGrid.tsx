@@ -144,11 +144,11 @@ export const FeatureGrid: React.FC = () => {
           initial={{ opacity: 1, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="relative max-w-4xl mx-auto min-h-[420px] sm:min-h-[450px] md:min-h-[480px] flex items-center justify-center my-6 md:my-10 rounded-3xl bg-white border border-slate-200/80 shadow-md p-4 sm:p-6"
+          className="relative max-w-5xl mx-auto min-h-[460px] sm:min-h-[500px] md:min-h-[550px] flex items-center justify-center my-6 md:my-10 rounded-3xl bg-white border border-slate-200/80 shadow-md p-4 sm:p-6"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="relative w-full h-[360px] sm:h-[390px] md:h-[420px] flex items-center justify-center overflow-visible">
+          <div className="relative w-full h-[400px] sm:h-[440px] md:h-[490px] flex items-center justify-center overflow-visible">
             {features.map((feat, idx) => {
               const distance = idx - activeIndex;
               const isCenter = distance === 0;
@@ -175,7 +175,7 @@ export const FeatureGrid: React.FC = () => {
                 zIndex = 30;
                 filter = 'blur(0px)';
               } else if (isRight) {
-                xOffset = screenWidth < 640 ? 110 : screenWidth < 1024 ? 200 : 270;
+                xOffset = screenWidth < 640 ? 120 : screenWidth < 1024 ? 240 : 320;
                 yOffset = 18;
                 scale = 0.86;
                 opacity = 0.65;
@@ -183,7 +183,7 @@ export const FeatureGrid: React.FC = () => {
                 zIndex = 20;
                 filter = 'blur(1px)';
               } else if (isLeft) {
-                xOffset = screenWidth < 640 ? -110 : screenWidth < 1024 ? -200 : -270;
+                xOffset = screenWidth < 640 ? -120 : screenWidth < 1024 ? -240 : -320;
                 yOffset = -22;
                 scale = 0.8;
                 opacity = 0.45;
@@ -209,7 +209,7 @@ export const FeatureGrid: React.FC = () => {
               return (
                 <motion.div
                   key={feat.id}
-                  className="absolute w-[90%] sm:w-[440px] md:w-[490px] cursor-pointer"
+                  className="absolute w-[95%] sm:w-[500px] md:w-[580px] cursor-pointer"
                   animate={{
                     x: xOffset,
                     y: yOffset,
